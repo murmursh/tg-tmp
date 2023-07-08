@@ -12,12 +12,17 @@ from tgbot.handlers.echo import register_echo
 from tgbot.handlers.user import register_user
 from tgbot.middlewares.environment import EnvironmentMiddleware
 
+from tgbot.misc.environment import Environment
+from tgbot.services.database import async_sessionmaker
+
 logger = logging.getLogger(__name__)
 
 
 def register_all_middlewares(dp, config):
-    dp.setup_middleware(EnvironmentMiddleware(config=config))
-
+    ...
+    
+def register_env_middleware(dp, env:Environment):
+    dp.setup_middleware(EnvironmentMiddleware(env = env))
 
 def register_all_filters(dp):
     dp.filters_factory.bind(AdminFilter)
@@ -42,7 +47,8 @@ async def main():
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
 
-    bot['config'] = config
+    env = Environment(config=config, 
+                      db_session=async_sessionmaker())
 
     register_all_middlewares(dp, config)
     register_all_filters(dp)
@@ -54,7 +60,9 @@ async def main():
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()
-        await bot.session.close()
+        session = bot.session
+        if session is not None:
+            await session.close()
 
 
 if __name__ == '__main__':
