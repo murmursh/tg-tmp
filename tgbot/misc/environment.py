@@ -6,6 +6,5 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 @dataclass
 class Environment:
-    config:Config
-    db_session:async_sessionmaker[AsyncSession]
-    
+    config: Config
+    db_session: async_sessionmaker[AsyncSession]

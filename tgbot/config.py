@@ -38,7 +38,7 @@ def load_config(path: str = ""):
             use_redis=env.bool("USE_REDIS"),
         ),
         db=DbConfig(
-            db_url=env.str('DB_URL'),
+            db_url=env.str("DB_URL"),
         ),
-        misc=Miscellaneous()
+        misc=Miscellaneous(),
     )
